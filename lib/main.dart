@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_bi/homePage.dart';
+import 'package:project_bi/deskPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +19,8 @@ class MyApp extends StatelessWidget {
       ),
       home: LoginPage(),
       routes: <String, WidgetBuilder>{
-        '/home': (BuildContext context) => new HomePage()
+        '/home': (BuildContext context) => new HomePage(),
+        '/deskPage': (BuildContext context) => new DeskPage(username: username)
       },
     );
   }
@@ -49,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     var p = controllerPass.text;
     if(validateAndSave()){
         // JsonCodec codec = new JsonCodec();
-        final response = await http.post("http://192.168.43.3/project_bi/login.php",
+        final response = await http.post("http://192.168.2.19/project_bi/login.php",
         headers:{ "Accept": "application/json" },
         body:{
           "username" : u,
@@ -61,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
             pesan="Username atau password salah!";
           });
         }else{
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacementNamed(context, '/deskPage');
           setState(() {
             username=datauser[0]['username'];
             pesan="Selamat anda berhasil login";
