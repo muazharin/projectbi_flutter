@@ -45,23 +45,29 @@ class _LoginPageState extends State<LoginPage> {
   String pesan = '';
 
   Future<List> login() async{
+    var u = controllerUser.text;
+    var p = controllerPass.text;
     if(validateAndSave()){
-      try {
-        final response = await http.post("http://192.168.2.79/bi/login.php",
+        // JsonCodec codec = new JsonCodec();
+        final response = await http.post("http://192.168.43.3/project_bi/login.php",
+        headers:{ "Accept": "application/json" },
         body:{
-          "username" : controllerUser.text,
-          "password" : controllerPass.text
+          "username" : u,
+          "password" : p
         });
         var datauser = json.decode(response.body);
-        Navigator.pushReplacementNamed(context, '/home');
-        setState(() {
-          username=datauser[0]['username'];
-          pesan="Selamat anda berhasil login";
-        });
+        if(datauser.length == 0){
+          setState(() {
+            pesan="Username atau password salah!";
+          });
+        }else{
+          Navigator.pushReplacementNamed(context, '/home');
+          setState(() {
+            username=datauser[0]['username'];
+            pesan="Selamat anda berhasil login";
+          });
+        }
         return datauser;
-      } catch (e) {
-        print(e.message);
-      }
     }
   }
 
