@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:project_bi/homePage.dart';
 import 'package:project_bi/deskPage.dart';
 import 'package:project_bi/register.dart';
+import 'package:project_bi/templateForm/templateForm.dart';
 
 void main() => runApp(MyApp());
 
@@ -35,31 +36,37 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final formKey = new GlobalKey<FormState>();
-  bool validateAndSave(){
-    final form = formKey.currentState;
-    if(form.validate()){
-      form.save();
-      return true;
-    }
-    return false;
-  }
+  // final formKey = new GlobalKey<FormState>();
+  // bool validateAndSave(){
+  //   final form = formKey.currentState;
+  //   if(form.validate()){
+  //     form.save();
+  //     return true;
+  //   }
+  //   return false;
+  // }
+  GlobalKey<FormState> formKey = new GlobalKey();
+  bool _validate = false;
+  String _username, _password;
 
-  final controllerUser = new TextEditingController();
-  final controllerPass = new TextEditingController();
+  // final controllerUser = new TextEditingController();
+  // final controllerPass = new TextEditingController();
 
   String pesan = '';
 
   Future<List> login() async{
-    var u = controllerUser.text;
-    var p = controllerPass.text;
-    if(validateAndSave()){
+    // var u = controllerUser.text;
+    // var p = controllerPass.text;
+    if(formKey.currentState.validate()){
+        formKey.currentState.save();
+        // print(p);
+        print(_username);
         // JsonCodec codec = new JsonCodec();
         final response = await http.post("http://192.168.2.19/project_bi/login.php",
         headers:{ "Accept": "application/json" },
         body:{
-          "username" : u,
-          "password" : p
+          "username" : _username,
+          "password" : _password
         });
         var datauser = json.decode(response.body);
         if(datauser.length == 0){
@@ -109,12 +116,17 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.all(16),
           child: Form(
             key: formKey,
+            autovalidate: _validate,
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    validator: (value) => value.isEmpty ? 'Username can\'t be empty':null,
-                    controller: controllerUser,
+                    // validator: (value) => value.isEmpty ? 'Username can\'t be empty':null,
+                    validator: validationUser,
+                    onSaved: (String val){
+                      _username = val;
+                    },
+                    // controller: controllerUser,
                     decoration: InputDecoration(
                       icon: Icon(
                         Icons.person,
@@ -125,8 +137,12 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   ),
                   TextFormField(
-                    validator: (value) => value.isEmpty ? 'Password can\'t be empty':null,
-                    controller: controllerPass,
+                    // validator: (value) => value.isEmpty ? 'Password can\'t be empty':null,
+                    validator: validationPass,
+                    onSaved: (String val){
+                      _password = val;
+                    },
+                    // controller: controllerPass,
                     decoration: InputDecoration(
                       icon: Icon(
                         Icons.vpn_key,
