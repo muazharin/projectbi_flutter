@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:project_bi/templateForm/templateForm.dart';
 
 class RegistPage extends StatefulWidget {
   @override
@@ -7,34 +8,24 @@ class RegistPage extends StatefulWidget {
 }
 
 class _RegistPageState extends State<RegistPage> {
-  final formKey = new GlobalKey<FormState>();
-  bool validateAndSave(){
-    final form = formKey.currentState;
-    if(form.validate()){
-      form.save();
-      return true;
-    }
-    return false;
-  }
-
-  final controllerUser = new TextEditingController();
-  final controllerPass = new TextEditingController();
-  final controllerName = new TextEditingController();
-  final controllerEmail = new TextEditingController();
-  final controllerNumber = new TextEditingController();
+  
+  GlobalKey<FormState> formKey = new GlobalKey();
+  bool _validate = false;
+  String _username, _password, _name, _email, _telp;
 
   void register(){
-    if(validateAndSave()){
+    if(formKey.currentState.validate()){
+      formKey.currentState.save();
       try{
         var url = "http://192.168.2.19/project_bi/user/register";
         http.post(url, body: {
-          "nama_lengkap": controllerName.text,
-          "username": controllerUser.text,
-          "password": controllerPass.text,
-          "email": controllerEmail.text,
-          "no_telp": controllerNumber.text
+          "nama_lengkap": _name,
+          "username": _username,
+          "password": _password,
+          "email": _email,
+          "no_telp": _telp
         });
-        // Navigator.pop(context);
+        
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -47,7 +38,6 @@ class _RegistPageState extends State<RegistPage> {
                 new FlatButton(
                   child: new Text("Close"),
                   onPressed: () {
-                    // Navigator.of(context).pop();
                     Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
                   },
                 ),
@@ -66,19 +56,22 @@ class _RegistPageState extends State<RegistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login Page'),
+        title: Text('Register'),
       ),
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.all(16),
           child: Form(
             key: formKey,
+            autovalidate: _validate,
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    validator: (value) => value.isEmpty ? 'Name can\'t be empty':null,
-                    controller: controllerName,
+                    validator: validationName,
+                    onSaved: (String val){
+                      _name = val;
+                    },
                     decoration: InputDecoration(
                       icon: Icon(
                         Icons.contacts,
@@ -89,8 +82,10 @@ class _RegistPageState extends State<RegistPage> {
                     )
                   ),
                   TextFormField(
-                    validator: (value) => value.isEmpty ? 'Username can\'t be empty':null,
-                    controller: controllerUser,
+                    validator: validationUser,
+                    onSaved: (String val){
+                      _username = val;
+                    },
                     decoration: InputDecoration(
                       icon: Icon(
                         Icons.person,
@@ -101,8 +96,10 @@ class _RegistPageState extends State<RegistPage> {
                     )
                   ),
                   TextFormField(
-                    validator: (value) => value.isEmpty ? 'Password can\'t be empty':null,
-                    controller: controllerPass,
+                    validator: validationPass,
+                    onSaved: (String val){
+                      _password = val;
+                    },
                     decoration: InputDecoration(
                       icon: Icon(
                         Icons.vpn_key,
@@ -114,8 +111,10 @@ class _RegistPageState extends State<RegistPage> {
                     obscureText: true,
                   ),
                   TextFormField(
-                    validator: (value) => value.isEmpty ? 'Email can\'t be empty':null,
-                    controller: controllerEmail,
+                    validator: validationEmail,
+                    onSaved: (String val){
+                      _email = val;
+                    },
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       icon: Icon(
@@ -127,8 +126,10 @@ class _RegistPageState extends State<RegistPage> {
                     )
                   ),
                   TextFormField(
-                    validator: (value) => value.isEmpty ? 'No Telp can\'t be empty':null,
-                    controller: controllerNumber,
+                    validator: validationPhone,
+                    onSaved: (String val){
+                      _telp = val;
+                    },
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       icon: Icon(
@@ -136,18 +137,14 @@ class _RegistPageState extends State<RegistPage> {
                         color: Colors.blue,
                       ),
                       filled: true,
-                      labelText: 'No Telp'
+                      labelText: 'Mobile'
                     )
                   ),
                   ButtonBar(
                     children: <Widget>[
                       FlatButton(
                         onPressed: (){
-                          controllerUser.clear();
-                          controllerName.clear();
-                          controllerPass.clear();
-                          controllerEmail.clear();
-                          controllerNumber.clear();
+                          formKey.currentState.reset();
                         },
                         child: Text('Reset'),
                       ),
