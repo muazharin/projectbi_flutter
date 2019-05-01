@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_bi/homePage.dart';
 import 'package:project_bi/deskPage.dart';
+import 'package:project_bi/register.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,7 +21,9 @@ class MyApp extends StatelessWidget {
       home: LoginPage(),
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => new HomePage(),
-        '/deskPage': (BuildContext context) => new DeskPage(username: username)
+        '/deskPage': (BuildContext context) => new DeskPage(username: username),
+        '/register': (BuildContext context) => new RegistPage(),
+        '/login': (BuildContext context) => new LoginPage(),
       },
     );
   }
@@ -63,6 +66,25 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             pesan="Username atau password salah!";
           });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              // return object of type Dialog
+              return AlertDialog(
+                title: new Text("Login"),
+                content: new Text("$pesan"),
+                actions: <Widget>[
+                  // usually buttons at the bottom of the dialog
+                  new FlatButton(
+                    child: new Text("Close"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
         }else{
           Navigator.pushReplacementNamed(context, '/deskPage');
           setState(() {
@@ -87,49 +109,50 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.all(16),
           child: Form(
             key: formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  validator: (value) => value.isEmpty ? 'Username can\'t be empty':null,
-                  controller: controllerUser,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.person,
-                      color: Colors.blue,
-                    ),
-                    filled: true,
-                    labelText: 'Username'
-                  )
-                ),
-                TextFormField(
-                  validator: (value) => value.isEmpty ? 'Password can\'t be empty':null,
-                  controller: controllerPass,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.vpn_key,
-                      color: Colors.blue,
-                    ),
-                    filled: true,
-                    labelText: 'Password',
-                  ),
-                  obscureText: true,
-                ),
-                ButtonBar(
-                  children: <Widget>[
-                    FlatButton(
-                      onPressed: (){
-                        controllerUser.clear();
-                        controllerPass.clear();
-                      },
-                      child: Text('Sign Up'),
-                    ),
-                    RaisedButton(
-                      onPressed: login,
-                      child: Text('Login'),
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    validator: (value) => value.isEmpty ? 'Username can\'t be empty':null,
+                    controller: controllerUser,
+                    decoration: InputDecoration(
+                      icon: Icon(
+                        Icons.person,
+                        color: Colors.blue,
+                      ),
+                      filled: true,
+                      labelText: 'Username'
                     )
-                  ],
-                ),
-              ],
+                  ),
+                  TextFormField(
+                    validator: (value) => value.isEmpty ? 'Password can\'t be empty':null,
+                    controller: controllerPass,
+                    decoration: InputDecoration(
+                      icon: Icon(
+                        Icons.vpn_key,
+                        color: Colors.blue,
+                      ),
+                      filled: true,
+                      labelText: 'Password',
+                    ),
+                    obscureText: true,
+                  ),
+                  ButtonBar(
+                    children: <Widget>[
+                      FlatButton(
+                        onPressed: (){
+                          Navigator.pushNamed(context, '/register');
+                        },
+                        child: Text('Sign Up'),
+                      ),
+                      RaisedButton(
+                        onPressed: login,
+                        child: Text('Login'),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
