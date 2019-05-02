@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:http/http.dart' as http;
+import 'package:project_bi/templateForm/templateForm.dart';
 
 class DeskPage extends StatefulWidget {
   //@override
@@ -44,7 +45,7 @@ class _DeskPageState extends State<DeskPage> {
                         // return object of type Dialog
                         return AlertDialog(
                           title: new Text("Exit"),
-                          content: new Text("Are you really want to exit?"),
+                          content: new Text("Do you really want to exit?"),
                           actions: <Widget>[
                             // usually buttons at the bottom of the dialog
                             new FlatButton(
@@ -82,7 +83,7 @@ class _DeskPageState extends State<DeskPage> {
   }
 
   void input(String _barcodeString){
-    var url = "http://192.168.2.19/project_bi/kegiatan/addData";
+    var url = "$ip"+"/kegiatan/addData";
 
     http.post(url, body: {
       "tabel": _barcodeString,

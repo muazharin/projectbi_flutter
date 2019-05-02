@@ -17,7 +17,7 @@ class _RegistPageState extends State<RegistPage> {
     if(formKey.currentState.validate()){
       formKey.currentState.save();
       try{
-        var url = "http://192.168.2.19/project_bi/user/register";
+        var url = "$ip"+"/user/register";
         http.post(url, body: {
           "nama_lengkap": _name,
           "username": _username,

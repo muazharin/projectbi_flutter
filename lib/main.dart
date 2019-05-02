@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
         // print(p);
         print(_username);
         // JsonCodec codec = new JsonCodec();
-        final response = await http.post("http://192.168.2.19/project_bi/login.php",
+        final response = await http.post("$ip"+"/login.php",
         headers:{ "Accept": "application/json" },
         body:{
           "username" : _username,
