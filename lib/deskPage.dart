@@ -8,15 +8,17 @@ import 'package:project_bi/templateForm/templateForm.dart';
 class DeskPage extends StatefulWidget {
   //@override
   final String username;
-  DeskPage({String username}): this.username = username;
-  _DeskPageState createState() => _DeskPageState(username);
+  final String id;
+  DeskPage({String username, String id}): this.username = username, this.id = id;
+  _DeskPageState createState() => _DeskPageState(username, id);
   
 }
 
 class _DeskPageState extends State<DeskPage> {
 
-  _DeskPageState(this.username);
+  _DeskPageState(this.username, this.id);
   final String username;
+  final String id;
 
   
   String _barcodeString = '';
@@ -24,7 +26,8 @@ class _DeskPageState extends State<DeskPage> {
 
   @override
   Widget build(BuildContext context) {
-    //String a = this.username;
+    // String a = this.username;
+    // String b = this.id;
     return Scaffold(
       appBar: new AppBar(
         title: Text('Home'),
@@ -35,7 +38,7 @@ class _DeskPageState extends State<DeskPage> {
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                new Text('$_barcodeString'),
+                new Text('$_barcodeString ${this.username} ${this.id}'),
                 RaisedButton(
                   onPressed: (){
                     // Navigator.pushReplacementNamed(context, '/login');
@@ -83,11 +86,14 @@ class _DeskPageState extends State<DeskPage> {
   }
 
   void input(String _barcodeString){
-    var url = "$ip"+"/kegiatan/addData";
+    // var url = "$ip"+"/kegiatan/addData";
+    var url = "$ip"+"/kegiatan/addDataEvent";
 
     http.post(url, body: {
-      "tabel": _barcodeString,
-      "username": this.username,
+      // "tabel": _barcodeString,
+      // "username": this.username,
+      "id_kegiatan": _barcodeString,
+      "id_user": this.id
     });
   }
 
@@ -97,7 +103,6 @@ class _DeskPageState extends State<DeskPage> {
       if(!mounted){return;}
       setState(() => _barcodeString = reader);
       input(_barcodeString);
-      //Navigator.pop(context);
     }on PlatformException catch(e){
       if(e.code==BarcodeScanner.CameraAccessDenied){
         requestPermission();

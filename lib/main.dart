@@ -10,6 +10,7 @@ import 'package:project_bi/templateForm/templateForm.dart';
 void main() => runApp(MyApp());
 
 String username;
+String id;
 
 class MyApp extends StatelessWidget {
   @override
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       home: LoginPage(),
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => new HomePage(),
-        '/deskPage': (BuildContext context) => new DeskPage(username: username),
+        '/deskPage': (BuildContext context) => new DeskPage(username: username, id: id),
         '/register': (BuildContext context) => new RegistPage(),
         '/login': (BuildContext context) => new LoginPage(),
       },
@@ -36,33 +37,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // final formKey = new GlobalKey<FormState>();
-  // bool validateAndSave(){
-  //   final form = formKey.currentState;
-  //   if(form.validate()){
-  //     form.save();
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  
   GlobalKey<FormState> formKey = new GlobalKey();
   bool _validate = false;
   String _username, _password;
 
-  // final controllerUser = new TextEditingController();
-  // final controllerPass = new TextEditingController();
-
   String pesan = '';
 
   Future<List> login() async{
-    // var u = controllerUser.text;
-    // var p = controllerPass.text;
+  
     if(formKey.currentState.validate()){
         formKey.currentState.save();
-        // print(p);
         print(_username);
-        // JsonCodec codec = new JsonCodec();
-        final response = await http.post("$ip"+"/login.php",
+        final response = await http.post("$ip"+"/login",
         headers:{ "Accept": "application/json" },
         body:{
           "username" : _username,
@@ -76,12 +63,10 @@ class _LoginPageState extends State<LoginPage> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              // return object of type Dialog
               return AlertDialog(
                 title: new Text("Login"),
                 content: new Text("$pesan"),
                 actions: <Widget>[
-                  // usually buttons at the bottom of the dialog
                   new FlatButton(
                     child: new Text("Close"),
                     onPressed: () {
@@ -96,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacementNamed(context, '/deskPage');
           setState(() {
             username=datauser[0]['username'];
+            id=datauser[0]['id'];
             pesan="Selamat anda berhasil login";
           });
         }
@@ -121,12 +107,10 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    // validator: (value) => value.isEmpty ? 'Username can\'t be empty':null,
                     validator: validationUser,
                     onSaved: (String val){
                       _username = val;
                     },
-                    // controller: controllerUser,
                     decoration: InputDecoration(
                       icon: Icon(
                         Icons.person,
@@ -137,12 +121,10 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   ),
                   TextFormField(
-                    // validator: (value) => value.isEmpty ? 'Password can\'t be empty':null,
                     validator: validationPass,
                     onSaved: (String val){
                       _password = val;
                     },
-                    // controller: controllerPass,
                     decoration: InputDecoration(
                       icon: Icon(
                         Icons.vpn_key,
